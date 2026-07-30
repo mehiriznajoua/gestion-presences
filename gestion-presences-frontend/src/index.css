@@ -1,1 +1,53 @@
 @import "tailwindcss";
+
+:root {
+  --color-primary: #1A1A1A;
+  --color-primary-light: #333333;
+  --color-accent: #E2231A;
+  --color-bg: #FFFFFF;
+  --color-bg-soft: #F7F7F7;
+  --color-success: #2E7D5B;
+  --color-danger: #C0392B;
+  --color-warning: #C9821A;
+}
+
+body {
+ body {
+   font-family: 'Rubik', -apple-system, sans-serif;
+   background-color: var(--color-bg-soft);
+   font-size: 16px;
+   color: #1A1A1A;
+ }
+  background-color: var(--color-bg-soft);
+  font-size: 16px;
+  color: #1A1A1A;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 1.75rem;
+  color: #1A1A1A;
+}
+
+table {
+  font-size: 1rem;
+}
+
+th {
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+td {
+  font-weight: 500;
+}
+
+.btn-accent {
+  background-color: #E2231A;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.btn-accent:hover {
+  background-color: #c11d15;
+}
