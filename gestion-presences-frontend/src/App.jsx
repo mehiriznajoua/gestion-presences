@@ -5,6 +5,9 @@ import Dashboard from './pages/Dashboard'
 import Employes from './pages/Employes'
 import EmployeDetail from './pages/EmployeDetail'
 import Pointage from './pages/Pointage'
+import Presences from './pages/Presences'
+import AjoutEmploye from './pages/AjoutEmploye'
+import CreationCompte from './pages/CreationCompte'
 
 function App() {
   return (
@@ -16,6 +19,9 @@ function App() {
         <Route path="/employes" element={<Employes />} />
         <Route path="/employes/:id" element={<EmployeDetail />} />
         <Route path="/pointage" element={<Pointage />} />
+        <Route path="/presences" element={<Presences />} />
+        <Route path="/employes/nouveau" element={<AjoutEmploye />} />
+        <Route path="/comptes/nouveau" element={<CreationCompte />} />
       </Routes>
     </>
   )

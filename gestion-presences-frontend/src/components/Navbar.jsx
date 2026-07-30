@@ -17,6 +17,9 @@ function Navbar() {
         {(role === 'ADMIN' || role === 'RH') && (
           <Link to="/employes" className="font-medium hover:text-blue-600">Employés</Link>
         )}
+        {(role === 'ADMIN' || role === 'RH') && (
+          <Link to="/presences" className="font-medium hover:text-blue-600">Présences</Link>
+        )}
         <Link to="/pointage" className="font-medium hover:text-blue-600">Pointage</Link>
       </div>
       <button onClick={handleLogout} className="text-red-600 font-medium">

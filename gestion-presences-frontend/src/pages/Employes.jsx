@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/axiosConfig'
+import { Link } from 'react-router-dom'
 
 function Employes() {
   const [employes, setEmployes] = useState([])
@@ -18,6 +19,12 @@ function Employes() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <h1 className="text-2xl font-bold mb-6">Employés</h1>
+      <Link to="/employes/nouveau" className="inline-block bg-blue-600 text-white px-4 py-2 rounded mb-4">
+        + Ajouter un employé
+      </Link>
+      <Link to="/comptes/nouveau" className="inline-block bg-gray-700 text-white px-4 py-2 rounded mb-4 ml-2">
+        + Créer un compte de connexion
+      </Link>
       <table className="w-full bg-white rounded shadow">
         <thead>
           <tr className="bg-gray-200 text-left">
