@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Mail, Lock } from 'lucide-react'
 import api from '../api/axiosConfig'
 
 function Login() {
@@ -21,44 +22,56 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#1A1A1A]">
-      <div className="w-[38%] hidden md:flex flex-col justify-center px-16 relative">
-        <div>
-          <h1 className="text-white text-6xl font-bold mb-4 leading-tight">
-            <span className="text-[#FF3B30]">DBM</span>
-            <br />
-            Présences
+    <div className="min-h-screen flex bg-[#252525]">
+      <div className="w-[45%] hidden md:flex flex-col justify-start pt-20 px-20 relative">
+        <div className="max-w-2xl">
+          <h1 className="font-bold leading-[1.1]" style={{ fontSize: '85px' }}>
+            <span className="text-[#FF3B30] block" style={{ fontFamily: 'Milker, sans-serif', fontWeight: '900' }}>
+              DBM
+            </span>
+            <span className="text-[#F7F7F7] block -mt-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: '800', fontSize: '85px' }}>
+              Présences
+            </span>
           </h1>
-          <p className="text-white/60 text-lg max-w-sm mt-2">
+          <p className="text-white/80 text-xl max-w-lg mt-3 leading-relaxed font-semibold">
             Gérez les présences, absences et retards de vos équipes en un seul endroit.
           </p>
         </div>
       </div>
 
-      <div className="w-full md:w-[62%] flex items-center justify-center bg-[#F7F7F7]">
+      <div className="w-full md:w-[55%] flex items-center justify-center bg-[#F7F7F7]">
         <form onSubmit={handleSubmit} className="bg-white p-12 rounded-lg shadow-sm w-[30rem]">
-          <h1 className="mb-2 text-3xl font-bold">Connexion</h1>
-          <p className="text-[#1A1A1A]/50 mb-8 text-base">Accédez à votre espace</p>
+          <h1 className="mb-1 text-4xl font-bold">Connexion</h1>
+          <p className="text-[#1A1A1A]/60 mb-8 text-lg font-medium">Accédez à votre espace</p>
 
           {error && <p className="text-[#C0392B] mb-4 font-medium text-sm">{error}</p>}
 
           <label className="block text-sm font-semibold text-[#1A1A1A]/60 mb-2">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-[#1A1A1A]/15 p-3.5 rounded-md mb-5 text-base focus:outline-none focus:border-[#E2231A]"
-          />
+          <div className="relative">
+            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1A1A1A]/30 w-5 h-5" />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full border border-[#1A1A1A]/15 pl-11 pr-4 py-3.5 rounded-md text-base focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#FF3B30]/20 bg-[#FAFAFA]"
+            />
+          </div>
 
-          <label className="block text-sm font-semibold text-[#1A1A1A]/60 mb-2">Mot de passe</label>
-          <input
-            type="password"
-            value={motDePasse}
-            onChange={(e) => setMotDePasse(e.target.value)}
-            className="w-full border border-[#1A1A1A]/15 p-3.5 rounded-md mb-8 text-base focus:outline-none focus:border-[#E2231A]"
-          />
+          <label className="block text-sm font-semibold text-[#1A1A1A]/60 mt-5 mb-2">Mot de passe</label>
+          <div className="relative">
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1A1A1A]/30 w-5 h-5" />
+            <input
+              type="password"
+              value={motDePasse}
+              onChange={(e) => setMotDePasse(e.target.value)}
+              className="w-full border border-[#1A1A1A]/15 pl-11 pr-4 py-3.5 rounded-md text-base focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#FF3B30]/20 bg-[#FAFAFA]"
+            />
+          </div>
 
-          <button type="submit" className="btn-accent w-full p-4 rounded-md text-base font-semibold">
+          <button 
+            type="submit" 
+            className="w-full bg-[#FF3B30] hover:bg-[#E2231A] text-white p-4 rounded-md text-base font-semibold mt-8 transition-all duration-200 hover:shadow-lg hover:shadow-[#FF3B30]/30 hover:-translate-y-0.5"
+          >
             Se connecter
           </button>
         </form>

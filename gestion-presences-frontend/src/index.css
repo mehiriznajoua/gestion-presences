@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #1A1A1A;
+  --color-primary: #252525;
   --color-primary-light: #333333;
   --color-accent: #E2231A;
   --color-bg: #FFFFFF;
@@ -12,12 +12,7 @@
 }
 
 body {
- body {
-   font-family: 'Rubik', -apple-system, sans-serif;
-   background-color: var(--color-bg-soft);
-   font-size: 16px;
-   color: #1A1A1A;
- }
+  font-family: 'Inter', -apple-system, sans-serif;
   background-color: var(--color-bg-soft);
   font-size: 16px;
   color: #1A1A1A;
@@ -50,4 +45,11 @@ td {
 
 .btn-accent:hover {
   background-color: #c11d15;
+}
+
+@font-face {
+  font-family: 'Milker';
+  src: url('/fonts/Milkert.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
 }
