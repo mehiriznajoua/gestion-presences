@@ -4,13 +4,15 @@ import api from '../api/axiosConfig'
 function Presences() {
   const [presences, setPresences] = useState([])
   const [filtreStatut, setFiltreStatut] = useState('TOUS')
+  const [filtreDate, setFiltreDate] = useState('')
 
   useEffect(() => {
     api.get('/presences').then((res) => setPresences(res.data))
   }, [])
 
-  const presencesFiltrees =
-    filtreStatut === 'TOUS' ? presences : presences.filter((p) => p.statut === filtreStatut)
+  const presencesFiltrees = presences
+    .filter((p) => filtreStatut === 'TOUS' || p.statut === filtreStatut)
+    .filter((p) => !filtreDate || p.date === filtreDate)
 
   const badgeColor = {
     PRESENT: 'bg-[#2E7D5B]/10 text-[#2E7D5B]',
@@ -22,7 +24,7 @@ function Presences() {
     <div className="min-h-screen bg-[#F7F7F7] p-10">
       <h1 className="mb-6">Présences</h1>
 
-      <div className="flex gap-2 mb-5">
+      <div className="flex gap-2 mb-5 items-center flex-wrap">
         {['TOUS', 'PRESENT', 'ABSENT', 'RETARD'].map((statut) => (
           <button
             key={statut}
@@ -34,6 +36,18 @@ function Presences() {
             {statut}
           </button>
         ))}
+
+        <input
+          type="date"
+          value={filtreDate}
+          onChange={(e) => setFiltreDate(e.target.value)}
+          className="border border-[#1A1A1A]/15 rounded-md px-3 py-2 text-base ml-2"
+        />
+        {filtreDate && (
+          <button onClick={() => setFiltreDate('')} className="text-[#1A1A1A]/50 text-sm underline">
+            Effacer la date
+          </button>
+        )}
       </div>
 
       <table className="w-full bg-white rounded-lg shadow-sm border border-[#1A1A1A]/10 overflow-hidden">

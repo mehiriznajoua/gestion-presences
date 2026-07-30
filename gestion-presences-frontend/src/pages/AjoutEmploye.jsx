@@ -27,33 +27,60 @@ function AjoutEmploye() {
     }
   }
 
-  const inputClass = "w-full border border-[#1A1A1A]/15 p-2.5 rounded-md mb-3 focus:outline-none focus:border-[#E2231A]"
+  const inputClass = "w-full border border-[#1A1A1A]/15 p-2.5 rounded-md focus:outline-none focus:border-[#E2231A]"
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7] p-10 flex justify-center">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-sm border border-[#1A1A1A]/10 w-full max-w-lg h-fit">
+    <div className="min-h-screen bg-[#F7F7F7] p-10 flex justify-center items-start">
+      <form onSubmit={handleSubmit} className="bg-white p-10 rounded-lg shadow-sm border border-[#1A1A1A]/10 w-full max-w-4xl h-fit mt-4">
+        <button
+          type="button"
+          onClick={() => navigate('/employes')}
+          aria-label="Retour"
+          className="w-9 h-9 flex items-center justify-center rounded-full border border-[#1A1A1A]/15 text-[#1A1A1A]/70 hover:bg-[#E2231A]/10 hover:text-[#E2231A] hover:border-[#E2231A]/30 transition-colors mb-4"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
         <h1 className="mb-6">Ajouter un employé</h1>
         {error && <p className="text-[#C0392B] font-medium mb-4">{error}</p>}
 
-        <input name="nom" placeholder="Nom" value={form.nom} onChange={handleChange} className={inputClass} required />
-        <input name="prenom" placeholder="Prénom" value={form.prenom} onChange={handleChange} className={inputClass} required />
-        <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} className={inputClass} required />
-        <input name="telephone" placeholder="Téléphone" value={form.telephone} onChange={handleChange} className={inputClass} />
-        <input name="poste" placeholder="Poste" value={form.poste} onChange={handleChange} className={inputClass} />
-        <input name="departement" placeholder="Département" value={form.departement} onChange={handleChange} className={inputClass} />
+        <div className="grid md:grid-cols-2 gap-4">
+          <input name="nom" placeholder="Nom" value={form.nom} onChange={handleChange} className={inputClass} required />
+          <input name="prenom" placeholder="Prénom" value={form.prenom} onChange={handleChange} className={inputClass} required />
+          <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} className={inputClass} required />
+          <input name="telephone" placeholder="Téléphone" value={form.telephone} onChange={handleChange} className={inputClass} />
+          <input name="poste" placeholder="Poste" value={form.poste} onChange={handleChange} className={inputClass} />
+          <input name="departement" placeholder="Département" value={form.departement} onChange={handleChange} className={inputClass} />
 
-        <select name="type" value={form.type} onChange={handleChange} className={inputClass}>
-          <option value="EMPLOYE">Employé</option>
-          <option value="STAGIAIRE">Stagiaire</option>
-        </select>
+          <select name="type" value={form.type} onChange={handleChange} className={inputClass}>
+            <option value="EMPLOYE">Employé</option>
+            <option value="STAGIAIRE">Stagiaire</option>
+          </select>
 
-        <label className="block text-sm font-semibold text-[#1A1A1A]/60 mb-1">Date d'embauche</label>
-        <input name="dateEmbauche" type="date" value={form.dateEmbauche} onChange={handleChange} className={inputClass} required />
+          <label className="flex items-center gap-3 border border-[#1A1A1A]/15 rounded-md px-3.5 h-[46px] cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={form.actif}
+              onChange={(e) => setForm({ ...form, actif: e.target.checked })}
+              className="w-4 h-4 accent-[#E2231A]"
+            />
+            <span className="text-[#1A1A1A]/80">Compte actif</span>
+          </label>
 
-        <label className="block text-sm font-semibold text-[#1A1A1A]/60 mb-1">Date de fin de contrat (optionnel)</label>
-        <input name="dateFinContrat" type="date" value={form.dateFinContrat} onChange={handleChange} className={inputClass} />
+          <div>
+            <label className="block text-sm font-semibold text-[#1A1A1A]/60 mb-1">Date d'embauche</label>
+            <input name="dateEmbauche" type="date" value={form.dateEmbauche} onChange={handleChange} className={inputClass} required />
+          </div>
 
-        <button type="submit" className="btn-accent w-full p-3 rounded-md text-base mt-2">
+          <div>
+            <label className="block text-sm font-semibold text-[#1A1A1A]/60 mb-1">Date de fin de contrat (optionnel)</label>
+            <input name="dateFinContrat" type="date" value={form.dateFinContrat} onChange={handleChange} className={inputClass} />
+          </div>
+        </div>
+
+        <button type="submit" className="btn-accent w-full p-3 rounded-md text-base mt-6">
           Créer
         </button>
       </form>

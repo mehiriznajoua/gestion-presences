@@ -37,7 +37,6 @@ function Dashboard() {
           </span>
         </div>
       </div>
-
       <div className="mb-8">
         <p className="text-[#1A1A1A]/50 text-lg font-medium capitalize">{today}</p>
         <h1 className="mt-1">Tableau de bord</h1>

@@ -35,14 +35,14 @@ function Pointage() {
 
         <button
           onClick={handleArrivee}
-          className="w-full bg-[#2E7D5B] text-white font-semibold p-3 rounded-md mb-3 hover:bg-[#256349]"
+          className="w-full bg-[#1A1A1A] text-white font-semibold p-3 rounded-md mb-3 hover:bg-[#333333]"
         >
           Je suis arrivé(e)
         </button>
 
         <button
           onClick={handleDepart}
-          className="w-full btn-accent p-3 rounded-md"
+          className="w-full bg-[#1A1A1A] text-white font-semibold p-3 rounded-md hover:bg-[#333333]"
         >
           Je pars
         </button>
