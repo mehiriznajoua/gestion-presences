@@ -5,6 +5,10 @@ import com.stage.gestion_presences.dto.LoginRequest;
 import com.stage.gestion_presences.dto.RegisterRequest;
 import com.stage.gestion_presences.entity.Utilisateur;
 import com.stage.gestion_presences.repository.UtilisateurRepository;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,11 +49,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request) {
+    public Map<String, String> login(@RequestBody LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getMotDePasse())
         );
 
-        return jwtUtil.generateToken(request.getEmail());
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        String token = jwtUtil.generateToken(request.getEmail());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        response.put("role", utilisateur.getRole().name());
+        return response;
     }
 }

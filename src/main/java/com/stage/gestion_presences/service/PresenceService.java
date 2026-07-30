@@ -1,19 +1,24 @@
 package com.stage.gestion_presences.service;
 
+import com.stage.gestion_presences.entity.Employe;
 import com.stage.gestion_presences.entity.Presence;
+import com.stage.gestion_presences.repository.EmployeRepository;
 import com.stage.gestion_presences.repository.PresenceRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
 public class PresenceService {
 
     private final PresenceRepository presenceRepository;
+    private final EmployeRepository employeRepository;
 
-    public PresenceService(PresenceRepository presenceRepository) {
+    public PresenceService(PresenceRepository presenceRepository, EmployeRepository employeRepository) {
         this.presenceRepository = presenceRepository;
+        this.employeRepository = employeRepository;
     }
 
     public List<Presence> getAllPresences() {
@@ -61,5 +66,39 @@ public class PresenceService {
 
     public void deletePresence(Long id) {
         presenceRepository.deleteById(id);
+    }
+
+    public Presence pointerArrivee(String emailUtilisateur) {
+        Employe employe = employeRepository.findByEmail(emailUtilisateur)
+                .orElseThrow(() -> new RuntimeException("Aucun employé associé à ce compte"));
+
+        LocalDate today = LocalDate.now();
+
+        boolean dejaPointe = !presenceRepository.findByEmployeIdAndDate(employe.getId(), today).isEmpty();
+        if (dejaPointe) {
+            throw new IllegalStateException("Vous avez déjà pointé votre arrivée aujourd'hui");
+        }
+
+        Presence presence = new Presence();
+        presence.setEmploye(employe);
+        presence.setDate(today);
+        presence.setHeureArrivee(LocalTime.now());
+        presence.setStatut(Presence.Statut.PRESENT);
+
+        return presenceRepository.save(presence);
+    }
+
+    public Presence pointerDepart(String emailUtilisateur) {
+        Employe employe = employeRepository.findByEmail(emailUtilisateur)
+                .orElseThrow(() -> new RuntimeException("Aucun employé associé à ce compte"));
+
+        LocalDate today = LocalDate.now();
+
+        Presence presence = presenceRepository.findByEmployeIdAndDate(employe.getId(), today)
+                .stream().findFirst()
+                .orElseThrow(() -> new RuntimeException("Aucune arrivée enregistrée aujourd'hui"));
+
+        presence.setHeureDepart(LocalTime.now());
+        return presenceRepository.save(presence);
     }
 }

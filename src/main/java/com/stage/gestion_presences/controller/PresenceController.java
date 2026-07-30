@@ -3,6 +3,7 @@ package com.stage.gestion_presences.controller;
 import com.stage.gestion_presences.entity.Presence;
 import com.stage.gestion_presences.service.PresenceService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -45,6 +46,16 @@ public class PresenceController {
     @PostMapping
     public Presence create(@RequestBody Presence presence) {
         return presenceService.createPresence(presence);
+    }
+
+    @PostMapping("/pointer-arrivee")
+    public Presence pointerArrivee(Authentication authentication) {
+        return presenceService.pointerArrivee(authentication.getName());
+    }
+
+    @PostMapping("/pointer-depart")
+    public Presence pointerDepart(Authentication authentication) {
+        return presenceService.pointerDepart(authentication.getName());
     }
 
     @PutMapping("/{id}")

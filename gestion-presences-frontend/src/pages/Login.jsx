@@ -12,13 +12,14 @@ function Login() {
     e.preventDefault()
     try {
       const response = await api.post('/auth/login', { email, motDePasse })
-      localStorage.setItem('token', response.data)
+      localStorage.setItem('token', response.data.token)
+      localStorage.setItem('role', response.data.role)
       navigate('/dashboard')
     } catch (err) {
       setError('Email ou mot de passe incorrect')
     }
   }
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-96">

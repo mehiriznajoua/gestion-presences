@@ -12,8 +12,6 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // Clé secrète utilisée pour signer les tokens — en dur ici pour la démo,
-    // à externaliser dans application.properties pour un vrai projet
     private final SecretKey secretKey = Keys.hmacShaKeyFor(
             "cette-cle-doit-faire-au-moins-32-caracteres-de-long".getBytes()
     );
