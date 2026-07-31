@@ -1,5 +1,6 @@
 package com.stage.gestion_presences.service;
 
+import com.stage.gestion_presences.config.EntrepriseConfig;
 import com.stage.gestion_presences.entity.Employe;
 import com.stage.gestion_presences.entity.Presence;
 import com.stage.gestion_presences.repository.EmployeRepository;
@@ -15,10 +16,12 @@ public class PresenceService {
 
     private final PresenceRepository presenceRepository;
     private final EmployeRepository employeRepository;
+    private final EntrepriseConfig entrepriseConfig;
 
-    public PresenceService(PresenceRepository presenceRepository, EmployeRepository employeRepository) {
+    public PresenceService(PresenceRepository presenceRepository, EmployeRepository employeRepository, EntrepriseConfig entrepriseConfig) {
         this.presenceRepository = presenceRepository;
         this.employeRepository = employeRepository;
+        this.entrepriseConfig = entrepriseConfig;
     }
 
     public List<Presence> getAllPresences() {
@@ -79,11 +82,16 @@ public class PresenceService {
             throw new IllegalStateException("Vous avez déjà pointé votre arrivée aujourd'hui");
         }
 
+        LocalTime maintenant = LocalTime.now();
+        LocalTime heureLimite = entrepriseConfig.getHeureDebut().plusMinutes(entrepriseConfig.getToleranceMinutes());
+
+        Presence.Statut statut = maintenant.isAfter(heureLimite) ? Presence.Statut.RETARD : Presence.Statut.PRESENT;
+
         Presence presence = new Presence();
         presence.setEmploye(employe);
         presence.setDate(today);
-        presence.setHeureArrivee(LocalTime.now());
-        presence.setStatut(Presence.Statut.PRESENT);
+        presence.setHeureArrivee(maintenant);
+        presence.setStatut(statut);
 
         return presenceRepository.save(presence);
     }

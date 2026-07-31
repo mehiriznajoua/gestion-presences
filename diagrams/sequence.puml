@@ -1,0 +1,49 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+' --- Acteurs ---
+actor "Administrateur" as Admin
+actor "Ressources Humaines" as RH
+actor "Employé" as Emp
+
+' --- Système ---
+rectangle "Application de Gestion des Présences" {
+  
+  ' --- Authentification (Commune à tous) ---
+  usecase "S'authentifier" as UC_Login
+  
+  ' --- Fonctionnalités Admin & RH ---
+  usecase "Gérer les employés (CRUD)" as UC_ManageEmp
+  usecase "Visualiser le Tableau de Bord" as UC_Dashboard
+  usecase "Consulter l'historique des présences" as UC_History
+
+  ' --- Fonctionnalités Admin UNIQUEMENT ---
+  usecase "Créer des comptes utilisateur" as UC_CreateAccount
+
+  ' --- Fonctionnalités Employé UNIQUEMENT ---
+  usecase "Pointer son arrivée / départ" as UC_Clock
+}
+
+' --- Relations Admin ---
+Admin --> UC_Login
+Admin --> UC_ManageEmp
+Admin --> UC_Dashboard
+Admin --> UC_History
+Admin --> UC_CreateAccount
+
+' --- Relations RH ---
+RH --> UC_Login
+RH --> UC_ManageEmp
+RH --> UC_Dashboard
+RH --> UC_History
+
+' --- Relations Employé ---
+Emp --> UC_Login
+Emp --> UC_Clock
+
+' --- Inclusion (Pour montrer que gérer un employé permet de voir l'historique) ---
+UC_ManageEmp ..> UC_History : <<include>>
+
+@enduml

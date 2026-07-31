@@ -22,7 +22,7 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#252525]">
+    <div className="min-h-screen flex bg-[#1A1A1A]">
       <div className="w-[45%] hidden md:flex flex-col justify-start pt-20 px-20 relative">
         <div className="max-w-2xl">
           <h1 className="font-bold leading-[1.1]" style={{ fontSize: '85px' }}>

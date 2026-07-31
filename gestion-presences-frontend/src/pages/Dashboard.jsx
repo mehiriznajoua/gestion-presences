@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { 
   UserCheck, 
   Clock, 
   User,
   Briefcase,
   GraduationCap,
-  Users
+  Users,
+  LogOut
 } from 'lucide-react'
 import api from '../api/axiosConfig'
 
 function Dashboard() {
   const [stats, setStats] = useState(null)
+  const userRole = localStorage.getItem('role');
 
   useEffect(() => {
     api.get('/dashboard/stats').then((res) => setStats(res.data))
@@ -96,15 +99,17 @@ function Dashboard() {
         <div className="bg-white p-5 rounded-xl shadow-sm border border-[#252525]/5">
           <p className="text-[#252525]/60 font-bold text-sm mb-3">Accès rapide</p>
           <div className="flex gap-3">
-            <a 
-              href="/employes" 
-              className="bg-[#FF3B30] hover:bg-[#E2231A] text-white px-5 py-2 rounded-md text-sm font-black transition-all duration-200 hover:shadow-lg hover:shadow-[#FF3B30]/30 hover:-translate-y-0.5"
-            >
-              Voir les employés
-            </a>
+            {userRole !== 'EMPLOYE' && (
+              <a 
+                href="/employes" 
+                className="bg-[#FF3B30] hover:bg-[#E2231A] text-white px-5 py-2 rounded-md text-sm font-black transition-all duration-200 hover:shadow-lg hover:shadow-[#FF3B30]/30 hover:-translate-y-0.5"
+              >
+                Voir les employés
+              </a>
+            )}
             <a 
               href="/pointage" 
-              className="border-2 border-[#252525]/15 text-[#252525] font-black px-5 py-2 rounded-md text-sm hover:bg-[#F7F7F7] hover:border-[#1A1A1A]/30 transition-all duration-200 hover:-translate-y-0.5"
+              className="border-2 border-[#252525]/15 text-[#252525] font-black px-5 py-2 rounded-md text-sm hover:bg-[#F7F7F7] hover:border-[#252525]/30 transition-all duration-200 hover:-translate-y-0.5"
             >
               Pointer ma présence
             </a>

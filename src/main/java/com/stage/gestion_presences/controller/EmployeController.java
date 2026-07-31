@@ -2,6 +2,8 @@ package com.stage.gestion_presences.controller;
 
 import com.stage.gestion_presences.entity.Employe;
 import com.stage.gestion_presences.service.EmployeService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +36,13 @@ public class EmployeController {
     @GetMapping("/actifs")
     public List<Employe> getActifs() {
         return employeService.getEmployesActifs();
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Employe> getEmployeByEmail(@PathVariable String email) {
+        return employeService.findByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping

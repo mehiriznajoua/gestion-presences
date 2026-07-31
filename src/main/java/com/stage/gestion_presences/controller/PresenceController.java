@@ -1,7 +1,11 @@
 package com.stage.gestion_presences.controller;
 
+import com.stage.gestion_presences.config.EntrepriseConfig;
 import com.stage.gestion_presences.entity.Presence;
 import com.stage.gestion_presences.service.PresenceService;
+import jakarta.servlet.http.HttpServletRequest;
+
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
@@ -13,9 +17,11 @@ import java.util.List;
 public class PresenceController {
 
     private final PresenceService presenceService;
+    private final EntrepriseConfig entrepriseConfig;
 
-    public PresenceController(PresenceService presenceService) {
+    public PresenceController(PresenceService presenceService, EntrepriseConfig entrepriseConfig) {
         this.presenceService = presenceService;
+        this.entrepriseConfig = entrepriseConfig;
     }
 
     @GetMapping
@@ -49,13 +55,22 @@ public class PresenceController {
     }
 
     @PostMapping("/pointer-arrivee")
-    public Presence pointerArrivee(Authentication authentication) {
+    public Presence pointerArrivee(Authentication authentication, HttpServletRequest request) {
+        verifierIp(request);
         return presenceService.pointerArrivee(authentication.getName());
     }
 
     @PostMapping("/pointer-depart")
-    public Presence pointerDepart(Authentication authentication) {
+    public Presence pointerDepart(Authentication authentication, HttpServletRequest request) {
+        verifierIp(request);
         return presenceService.pointerDepart(authentication.getName());
+    }
+
+    private void verifierIp(HttpServletRequest request) {
+        String ipClient = request.getRemoteAddr();
+        if (!ipClient.equals(entrepriseConfig.getIpAutorisee())) {
+            throw new IllegalStateException("Pointage refusé : vous devez être connecté au WiFi de l'entreprise");
+        }
     }
 
     @PutMapping("/{id}")

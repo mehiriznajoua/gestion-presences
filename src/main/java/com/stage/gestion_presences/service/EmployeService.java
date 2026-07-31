@@ -4,6 +4,7 @@ import com.stage.gestion_presences.entity.Employe;
 import com.stage.gestion_presences.repository.EmployeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.List;
 
 @Service
@@ -53,5 +54,9 @@ public class EmployeService {
 
     public void deleteEmploye(Long id) {
         employeRepository.deleteById(id);
+    }
+
+     public Optional<Employe> findByEmail(String email) {
+        return employeRepository.findByEmail(email);
     }
 }
