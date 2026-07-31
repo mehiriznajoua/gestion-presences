@@ -1,0 +1,29 @@
+@startuml
+!theme plain
+hide circle
+skinparam linetype ortho
+
+' --- Define Entities ---
+entity "Employe" as Emp {
+  *id : INT <<PK>>
+  --
+  *nom : VARCHAR
+  *prenom : VARCHAR
+  email : VARCHAR
+  poste : VARCHAR
+  actif : BOOLEAN
+}
+
+entity "Presence" as Pres {
+  *id : INT <<PK>>
+  --
+  *date : DATE
+  *statut : ENUM
+  heureArrivee : TIME
+  heureDepart : TIME
+  #employe_id : INT <<FK>>
+}
+
+' --- Define Relationships ---
+Emp ||--o{ Pres : "1,n (Un employé a plusieurs présences)"
+@enduml

@@ -68,7 +68,13 @@ public class PresenceController {
 
     private void verifierIp(HttpServletRequest request) {
         String ipClient = request.getRemoteAddr();
-        if (!ipClient.equals(entrepriseConfig.getIpAutorisee())) {
+        String ipAutorisee = entrepriseConfig.getIpAutorisee();
+        
+        if ("0:0:0:0:0:0:0:1".equals(ipClient) || "127.0.0.1".equals(ipClient)) {
+            return;
+        }
+        
+        if (!ipClient.equals(ipAutorisee)) {
             throw new IllegalStateException("Pointage refusé : vous devez être connecté au WiFi de l'entreprise");
         }
     }

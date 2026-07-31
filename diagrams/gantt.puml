@@ -1,0 +1,28 @@
+@startgantt
+' --- Project Settings ---
+Project starts 2025-07-01
+
+' --- Define the Tasks ---
+[Analyse des besoins et cahier des charges] starts 2025-07-01 and ends 2025-07-05
+[Conception de la base de données (MCD/MLD)] starts 2025-07-06 and ends 2025-07-10
+[Développement du Back-End (Spring Boot)] starts 2025-07-11 and ends 2025-07-20
+[Développement du Front-End (React)] starts 2025-07-15 and ends 2025-07-28
+[Intégration, tests et correction de bugs] starts 2025-07-29 and ends 2025-08-05
+[Rédaction du rapport et finalisation] starts 2025-08-01 and ends 2025-08-10
+
+' --- Color the tasks (Optional) ---
+[Analyse des besoins et cahier des charges] is colored LightBlue
+[Conception de la base de données (MCD/MLD)] is colored LightCyan
+[Développement du Back-End (Spring Boot)] is colored LightGreen
+[Développement du Front-End (React)] is colored #FFCC99 
+[Intégration, tests et correction de bugs] is colored #FFA07A
+[Rédaction du rapport et finalisation] is colored #DDA0DD
+
+' --- Define Milestones (Diamonds) ---
+[Lancement du projet] happens 2025-07-01
+[Fin du développement] happens 2025-08-05
+
+' --- Mark the weekend (Saturday and Sunday) ---
+Saturday is closed
+Sunday is closed
+@endgantt

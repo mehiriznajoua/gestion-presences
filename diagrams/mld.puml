@@ -1,0 +1,31 @@
+@startuml
+!theme plain
+hide circle
+skinparam linetype ortho
+skinparam nodesep 50
+skinparam ranksep 50
+
+' --- Define Tables (Relational Model) ---
+entity "EMPLOYE" as Emp {
+  *id : INT <<PK>>
+  --
+  nom : VARCHAR(200)
+  prenom : VARCHAR(200)
+  email : VARCHAR(100)
+  poste : VARCHAR(100)
+  actif : BOOLEAN
+}
+
+entity "PRESENCE" as Pres {
+  *id : INT <<PK>>
+  --
+  date : DATE
+  statut : VARCHAR(20)   "ENUM('PRESENT','ABSENT','RETARD')"
+  heureArrivee : TIME
+  heureDepart : TIME
+  #employe_id : INT <<FK>>
+}
+
+' --- Relations (Foreign Key) ---
+Emp ||--o{ Pres
+@enduml
