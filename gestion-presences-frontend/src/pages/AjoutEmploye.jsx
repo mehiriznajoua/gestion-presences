@@ -32,7 +32,6 @@ function AjoutEmploye() {
 
   return (
     <div className="min-h-screen bg-[#F7F7F7]" style={{ fontFamily: 'Inter, sans-serif' }}>
-      {/* Header - Matching Dashboard */}
       <div className="bg-[#252525] px-8 py-4 flex justify-between items-center">
         <div>
           <h1 className="flex items-center gap-1 leading-[1.1]" style={{ fontFamily: 'Inter, sans-serif', fontStretch: 'expanded' }}>
@@ -46,7 +45,6 @@ function AjoutEmploye() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="p-8 flex justify-center items-start min-h-[calc(100vh-88px)]">
         <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-sm border border-[#252525]/5 w-full max-w-4xl mt-2">
           
@@ -58,7 +56,6 @@ function AjoutEmploye() {
             ← Retour
           </button>
 
-          {/* Title - Poppins Bold */}
           <h1 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: '900', fontSize: '36px', color: '#252525', fontStretch: 'expanded' }} className="mb-4">
             Ajouter un employé
           </h1>
@@ -99,7 +96,6 @@ function AjoutEmploye() {
               </select>
             </div>
 
-            {/* Compact Checkbox */}
             <label className="flex items-center gap-3 border border-[#252525]/15 rounded-md px-3 py-2 cursor-pointer select-none bg-white transition-colors hover:border-[#1A1A1A]/30">
               <input
                 type="checkbox"

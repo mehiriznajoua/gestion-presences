@@ -32,6 +32,12 @@ public class JwtFilter extends OncePerRequestFilter {
                                      @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
+        // Only bypass LOGIN (no token exists yet). DO NOT bypass register!
+        if (request.getRequestURI().contains("/api/auth/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -39,7 +45,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7); // enlève "Bearer "
+        String token = authHeader.substring(7);
         String email = jwtUtil.extractEmail(token);
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
