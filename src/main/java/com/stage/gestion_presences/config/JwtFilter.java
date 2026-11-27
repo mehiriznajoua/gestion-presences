@@ -26,17 +26,18 @@ public class JwtFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    // Seule la connexion saute le filtre (aucun token n'existe encore).
+    // Surtout pas /register : il est protégé par rôle.
+    @Override
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
+        return request.getRequestURI().equals(request.getContextPath() + "/api/auth/login");
+    }
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                     @NonNull HttpServletResponse response,
-                                     @NonNull FilterChain filterChain)
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-
-        // Only bypass LOGIN (no token exists yet). DO NOT bypass register!
-        if (request.getRequestURI().contains("/api/auth/login")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         String authHeader = request.getHeader("Authorization");
 
@@ -46,17 +47,30 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        String email = jwtUtil.extractEmail(token);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        try {
+            String email = jwtUtil.extractEmail(token);
 
-            if (jwtUtil.isTokenValid(token, email)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            // On vérifie le token d'abord, et on ne charge le compte que s'il est valide
+            if (email != null
+                    && SecurityContextHolder.getContext().getAuthentication() == null
+                    && jwtUtil.isTokenValid(token, email)) {
+
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                // Compte désactivé depuis l'émission du token : pas d'authentification
+                if (userDetails.isEnabled()) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+        } catch (RuntimeException e) {
+            // Token expiré, falsifié ou mal formé, ou compte supprimé :
+            // la requête continue sans authentification et sera refusée plus loin
+            SecurityContextHolder.clearContext();
+            logger.debug("Token JWT rejeté : " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);

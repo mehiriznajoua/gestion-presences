@@ -5,14 +5,21 @@ import com.stage.gestion_presences.entity.Employe;
 import com.stage.gestion_presences.entity.Presence;
 import com.stage.gestion_presences.repository.EmployeRepository;
 import com.stage.gestion_presences.repository.PresenceRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
 public class PresenceService {
+
+    // Les heures de pointage sont celles du Maroc, quel que soit le fuseau du serveur
+    private static final ZoneId FUSEAU = ZoneId.of("Africa/Casablanca");
 
     private final PresenceRepository presenceRepository;
     private final EmployeRepository employeRepository;
@@ -30,11 +37,18 @@ public class PresenceService {
 
     public Presence getPresenceById(Long id) {
         return presenceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Présence non trouvée avec id : " + id));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Présence non trouvée avec id : " + id));
     }
 
     public List<Presence> getPresencesByEmploye(Long employeId) {
         return presenceRepository.findByEmployeId(employeId);
+    }
+
+    // Présences de l'utilisateur connecté (utilisé par GET /api/presences/me)
+    public List<Presence> getPresencesByEmail(String email) {
+        Employe employe = trouverEmploye(email);
+        return presenceRepository.findByEmployeId(employe.getId());
     }
 
     public List<Presence> getPresencesByDate(LocalDate date) {
@@ -46,6 +60,10 @@ public class PresenceService {
     }
 
     public Presence createPresence(Presence presence) {
+        if (presence.getEmploye() == null || presence.getEmploye().getId() == null || presence.getDate() == null) {
+            throw new IllegalArgumentException("L'employé et la date sont obligatoires");
+        }
+
         boolean dejaEnregistre = !presenceRepository
                 .findByEmployeIdAndDate(presence.getEmploye().getId(), presence.getDate())
                 .isEmpty();
@@ -72,17 +90,19 @@ public class PresenceService {
     }
 
     public Presence pointerArrivee(String emailUtilisateur) {
-        Employe employe = employeRepository.findByEmail(emailUtilisateur)
-                .orElseThrow(() -> new RuntimeException("Aucun employé associé à ce compte"));
+        Employe employe = trouverEmploye(emailUtilisateur);
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(FUSEAU);
 
-        boolean dejaPointe = !presenceRepository.findByEmployeIdAndDate(employe.getId(), today).isEmpty();
-        if (dejaPointe) {
-            throw new IllegalStateException("Vous avez déjà pointé votre arrivée aujourd'hui");
+        List<Presence> dejaLa = presenceRepository.findByEmployeIdAndDate(employe.getId(), today);
+        if (!dejaLa.isEmpty()) {
+            boolean aDejaPointe = dejaLa.get(0).getHeureArrivee() != null;
+            throw new IllegalStateException(aDejaPointe
+                    ? "Vous avez déjà pointé votre arrivée aujourd'hui"
+                    : "Vous êtes déjà enregistré(e) comme absent(e) aujourd'hui : contactez l'administration");
         }
 
-        LocalTime maintenant = LocalTime.now();
+        LocalTime maintenant = LocalTime.now(FUSEAU).truncatedTo(ChronoUnit.SECONDS);
         LocalTime heureLimite = entrepriseConfig.getHeureDebut().plusMinutes(entrepriseConfig.getToleranceMinutes());
 
         Presence.Statut statut = maintenant.isAfter(heureLimite) ? Presence.Statut.RETARD : Presence.Statut.PRESENT;
@@ -97,16 +117,33 @@ public class PresenceService {
     }
 
     public Presence pointerDepart(String emailUtilisateur) {
-        Employe employe = employeRepository.findByEmail(emailUtilisateur)
-                .orElseThrow(() -> new RuntimeException("Aucun employé associé à ce compte"));
+        Employe employe = trouverEmploye(emailUtilisateur);
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(FUSEAU);
 
+        // Il faut une vraie arrivée (une ligne d'absence n'a pas d'heure d'arrivée)
         Presence presence = presenceRepository.findByEmployeIdAndDate(employe.getId(), today)
                 .stream().findFirst()
-                .orElseThrow(() -> new RuntimeException("Aucune arrivée enregistrée aujourd'hui"));
+                .filter(p -> p.getHeureArrivee() != null)
+                .orElseThrow(() -> new IllegalStateException("Aucune arrivée enregistrée aujourd'hui"));
 
-        presence.setHeureDepart(LocalTime.now());
+        if (presence.getHeureDepart() != null) {
+            throw new IllegalStateException("Vous avez déjà pointé votre départ aujourd'hui");
+        }
+
+        LocalTime maintenant = LocalTime.now(FUSEAU).truncatedTo(ChronoUnit.SECONDS);
+        if (maintenant.isBefore(presence.getHeureArrivee())) {
+            throw new IllegalStateException("L'heure de départ ne peut pas précéder l'heure d'arrivée");
+        }
+
+        presence.setHeureDepart(maintenant);
         return presenceRepository.save(presence);
+    }
+
+    // Retrouve la fiche employé liée au compte (par email), ou répond 404 avec un message clair
+    private Employe trouverEmploye(String email) {
+        return employeRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Aucune fiche employé liée à ce compte"));
     }
 }

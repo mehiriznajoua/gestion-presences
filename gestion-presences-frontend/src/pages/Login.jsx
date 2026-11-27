@@ -9,7 +9,7 @@ function Login() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
-  const handleSubmit = async (e) => {
+/*  const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       const response = await api.post('/auth/login', { email, motDePasse })
@@ -20,6 +20,30 @@ function Login() {
       setError('Email ou mot de passe incorrect')
     }
   }
+*/
+
+const [loading, setLoading] = useState(false)
+
+const handleSubmit = async (e) => {
+  e.preventDefault()
+  setLoading(true)
+  setError('')
+  try {
+    const response = await api.post('/auth/login', { email, motDePasse })
+    localStorage.setItem('token', response.data.token)
+    localStorage.setItem('role', response.data.role)
+    navigate(response.data.role === 'EMPLOYE' ? '/profil' : '/dashboard')
+  } catch (err) {
+    setError(
+      err.response?.status === 401
+        ? 'Email ou mot de passe incorrect'
+        : 'Serveur indisponible, réessayez plus tard'
+    )
+  } finally {
+    setLoading(false)
+  }
+
+}
 
   return (
     <div className="min-h-screen flex bg-[#1A1A1A]">

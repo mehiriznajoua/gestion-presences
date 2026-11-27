@@ -36,7 +36,6 @@ function Presences() {
       </div>
 
       <div className="p-8">
-        {/* Title */}
         <div className="mb-4">
           <h1 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: '900', fontSize: '36px', color: '#252525', fontStretch: 'expanded' }}>
             Présences

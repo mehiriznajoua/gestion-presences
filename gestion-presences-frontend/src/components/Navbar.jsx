@@ -13,7 +13,7 @@ function Navbar() {
 
   const linkClass = (path) =>
     `text-base font-semibold transition-colors pb-1 border-b-2 ${
-      location.pathname === path
+      location.pathname.startsWith(path)
         ? 'text-[#1A1A1A] border-[#E2231A]'
         : 'text-[#1A1A1A]/60 border-transparent hover:text-[#1A1A1A]'
     }`

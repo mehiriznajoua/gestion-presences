@@ -22,6 +22,7 @@ function App() {
         <Route path="/employes" element={<Employes />} />
         <Route path="/employes/nouveau" element={<AjoutEmploye />} />
         <Route path="/employes/:id" element={<EmployeDetail />} />
+        <Route path="/profil" element={<EmployeDetail />} />
         <Route path="/presences" element={<Presences />} />
         <Route path="/pointage" element={<Pointage />} />
         <Route path="/comptes/nouveau" element={<CreationCompte />} />

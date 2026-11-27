@@ -1,6 +1,5 @@
 package com.stage.gestion_presences.config;
 
-import com.stage.gestion_presences.entity.Employe;
 import com.stage.gestion_presences.entity.Utilisateur;
 import com.stage.gestion_presences.repository.EmployeRepository;
 import com.stage.gestion_presences.repository.UtilisateurRepository;
@@ -27,8 +26,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé : " + email));
 
-        boolean actif = employeRepository.findByEmail(email)
-                .map(Employe::getActif)
+        // Un employé dont la fiche n'est pas explicitement active ne peut pas se connecter
+        // (même règle que PresenceService). Un compte sans fiche, comme l'admin, reste autorisé.
+        boolean actif = employeRepository.findByEmail(utilisateur.getEmail())
+                .map(employe -> Boolean.TRUE.equals(employe.getActif()))
                 .orElse(true);
 
         return User.builder()
